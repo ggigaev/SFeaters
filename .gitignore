@@ -1,0 +1,7 @@
+*.pyc
+.idea
+.ipynb_checkpoints
+*.bak
+*.swp
+*.DS_Store
+Registered_Business_Locations_-_San_Francisco.csv
