@@ -1,0 +1,9 @@
+business_id,short_inspect_date,short_violation_id,risk_category
+315,20150518,[103114 103154 103138],['High Risk' 'Low Risk']
+315,20150929,[103129 103157],['Moderate Risk' 'Low Risk']
+18079,20160502,[103139 103131],['Low Risk' 'Moderate Risk']
+27791,20150414,[103142],['Low Risk']
+64835,20171211,[103132],['Moderate Risk']
+69026,20160607,[103149],['Low Risk']
+74399,20161206,[103120],['Moderate Risk']
+79272,20160929,[103133 103108],['Moderate Risk' 'High Risk']
