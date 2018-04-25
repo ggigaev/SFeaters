@@ -10,7 +10,7 @@ def remove_missing_vid(df):
         Input : pass in a dataframe
         Output: returns a dataframe with clean violation id's
     '''
-    mask = df['violation_id'].isnull()
+    mask_viol = df['violation_id'].isnull()
     df_viol = df[~mask_viol]
     
     # clean up violation id's
@@ -24,6 +24,7 @@ def remove_missing_vid(df):
         L_vid.append(vid)
         
     df_viol['short_violation_id'] = L_vid
+    
     return df_viol
 
 
@@ -33,7 +34,7 @@ def remove_missing_vid(df):
 #####################################################################
 def group_bid_idate(df):
     '''
-        Input : pass in a dataframe
+        Input : pass in a dataframe from Step 1
         Output: returns a new dataframe with number of viloations per 
                 business at a given inspection date
     '''
@@ -102,54 +103,93 @@ def group_bid_idate(df):
             idx = idf.business_id[idf.business_id ==bid].index.tolist()
             idf.at[idx, 'p25_36'] = num_viols
     
-        return idf
+    return idf
 
 #####################################################################
-#  Step 3: Import zip codes from SF business lo
+#  Step 3: Import zip codes from SF business location file
 #####################################################################
-
-def add_bool_name(df):
+def import_zipcode(df, df_b):
     '''
-    Input: DataFram df
-    Output: DataFrame df with boolean column attached
+    Input: pass in dataframe from Step 2 and lookup df (SF business loc)
+    Output: returns dataframe df with missing zipcodes imported
     '''
-    length = len(df['org_name'])
-    L_flag = []
-    for i in range(length):
-        flag = len(df['org_name'][i]) == 0
-        L_flag.append(flag)
-
-    df['org_name_bool'] = L_flag
-
-    return df
+    # SF business location file uploading
+    # df = idf (from Step 2)
+    # df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
+    
+    # Identify and import zip code from SF business loc.
+    df_b_3cols = df_b[['Street Address', 'Source Zipcode', 'Business Start Date']]
+    
+    # let's identify missing zip code from df
+    df2 = df[['business_postal_code', 'business_address', 'business_name']]
+    
+    # list of addresses without zip codes
+    df_nozip = df2[df2['business_postal_code'].isnull()]
+    list_nozip_address = df_nozip['business_address'].tolist()
+    
+    # Let's get the list of street address and zipcodes
+    # df_b_matching_ones is the list of street addresses, zip codes, and business
+    # start dates that are matching between business loc and SF inspection files.
+    df_b_matching_ones = df_b_3cols[df_b_3cols['Street Address'].isin(list_nozip_address)]
+    
+    df_update_zipcode = df[:]
+    
+    # find matching addresses between SF inspection and SF business loc files and update 
+    # the missing zip codes in SF inspection
+    for address in list_nozip_address:
+        for row in df_b_matching_ones.iterrows():
+            if address == row[1][0]:
+                idx = df_update_zipcode[df_update_zipcode['business_address'] == address].index
+                df_update_zipcode.loc[idx,'business_postal_code'] = row[1][1]
+    
+    # Let's clean up df_update_zipcode
+    m520 = df_update_zipcode['business_postal_code'].isnull()
+    
+    # Let's assign all the null zip codes to 'zzzzz'
+    idx = df_update_zipcode[m520]['business_postal_code'].index
+    df_update_zipcode.loc[idx, 'business_postal_code'] = 'zzzzz'
+    
+    # convert float (94102.0) to string ('94102')
+    # Assign other junks like 'Ca' or '194' as 'zzzzz'
+    for index, row in df_update_zipcode[['business_postal_code', 'business_id']].iterrows():
+        n = row['business_postal_code']
+        if isinstance(n, float):
+            df_update_zipcode.loc[index, 'business_postal_code'] = str(int(n))
+        elif len(n) < 4:
+            df_update_zipcode.loc[index, 'business_postal_code'] = 'zzzzz'
+        elif len(n) == 9:
+            df_update_zipcode.loc[index, 'business_postal_code'] = str(n[:5])
+    
+    return df_update_zipcode
 
 #####################################################################
-#  Step 4: Create column user_delta with difference of event_created and user_created
+#  Step 4: Zip code dummy columns created
 #####################################################################
-def add_user_delta_min(df):
+def get_zipcode_dummies(df):
     '''
-        Input : pass in a dataframe
-        Output: DataFrame df with user_delta attached
-        user_delta is the difference in time when event was created and published
+        Input : pass in a dataframe from Step 3
+        Output: returns a dataframe with zip code dummies.
+        Comment: creates a text file called "col_names.txt" that will
+                 be used to select features.
     '''
-    df['user_delta'] = df['event_created']-df['user_created']
-    df['user_hour_delta']=df['user_delta'] / np.timedelta64(1, 'h')
-    df['user_min_delta']=df['user_hour_delta']*60
-    return df
-
-#####################################################################
-#  Step 5: Create column event_delta with difference of event_created and event_published
-#####################################################################
-def add_event_delta_min(df):
-    '''
-        Input : pass in a dataframe
-        Output: DataFrame df with user_delta attached
-        user_delta is the difference in time when event was created and published
-    '''
-    df['event_delta'] = df['event_published'] - df['event_created']
-    df['event_hour_delta']=df['event_delta'] / np.timedelta64(1, 'h')
-    df['event_min_delta']=df['event_hour_delta']*60
-    return df
+    # Using 9 months period as y label
+    df['y_label'] = (df['p1_3'] + df['p4_6'] + df['p7_9']) > 0
+    
+    # pd.get_dummies(df['business_postal_code'])
+    df = pd.concat([df, pd.get_dummies(df['business_postal_code'])], axis=1)
+    # remove one redundant column
+    df2 = df.drop(['zzzzz'], axis=1)
+    
+    # create a text file with column names, so that they can be used for feature 
+    # selection. Remove 95105 and 92672, which do not belong to SF.
+    s = ''
+    for i in df2.columns.values:
+        s += i + ', '
+        
+    with open('data/col_names.txt', 'w') as f:
+        f.write(s)
+    
+    return df2
 
 #####################################################################
 #  SCRUB EVERYTHING
