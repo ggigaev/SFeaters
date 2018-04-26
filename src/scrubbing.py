@@ -192,9 +192,27 @@ def get_zipcode_dummies(df):
     return df2
 
 #####################################################################
+#  Step 5: Remove the rows with 0 violation between 10 and 36 months
+#####################################################################
+def remove_rows_zero_violation(df):
+    '''
+        Input : pass in a dataframe from Step 4
+        Output: returns a dataframe without the rows with zero violation
+                between 10 and 36 months. (Those rows are labeled as
+                1, since this data set is from at least one violation.)
+    '''
+    # Using 9 months period as y label
+    df['p10_36'] = df['p10_12'] + df['p13_18'] + df['p19_24'] + df['p25_36']
+    
+    # Let's remove the ones with df5['p10_36'] == 0
+    df2 = df[df['p10_36'] != 0]
+    
+    return df2
+
+#####################################################################
 #  SCRUB EVERYTHING
 #####################################################################
-def scrub_everything(df, feature_names):
+def scrub_all(df):
     '''
         Input : pass in a dataframe, and a list of wanted feature names
         Output: tuple of 3 items
@@ -202,11 +220,15 @@ def scrub_everything(df, feature_names):
             2. returns 'y' --> target column
             3. returns 'X' --> Feature Matrix
     '''
-    df['fraud_no_fraud'] = scrub_fraud_no_fraud(df)
-    df2 = scrub_datetime(df)
-    df3 = add_bool_name(df2)
-    df4 = add_user_delta_min(df3)
-    df5 = add_event_delta_min(df4)
+    df2 = remove_missing_vid(df)
+    df3 = group_bid_idate(df2)
+    df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
+    df4 = import_zipcode(df3, df_b)
+    df5 = get_zipcode_dummies(df4)
+    df6 = remove_rows_zero_violation(df5) 
+    return df6
+    '''
     X = df5[feature_names].values
     y = df5['fraud_no_fraud'].values
     return (df, y, X)
+'''
