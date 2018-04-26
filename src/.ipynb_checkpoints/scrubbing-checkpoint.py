@@ -127,7 +127,7 @@ def import_zipcode(df, df_b):
     df_nozip = df2[df2['business_postal_code'].isnull()]
     list_nozip_address = df_nozip['business_address'].tolist()
     
-    # Let's get the list of street address and zipcodes
+    # Let's get the list of street address and zipcodes.
     # df_b_matching_ones is the list of street addresses, zip codes, and business
     # start dates that are matching between business loc and SF inspection files.
     df_b_matching_ones = df_b_3cols[df_b_3cols['Street Address'].isin(list_nozip_address)]
@@ -163,11 +163,53 @@ def import_zipcode(df, df_b):
     return df_update_zipcode
 
 #####################################################################
-#  Step 4: Zip code dummy columns created
+#  Step 4: Add number of turnovers and latest business startdate
+#####################################################################
+def import_turnover_startdate(df, df_b):
+    '''
+        Input : pass in a dataframe from Step 3 and lookup df (SF business loc)
+        Output: returns a dataframe with number of turnovers and start dates
+        Comment: missing data were filled with average of turnovers and 
+                average startdate
+    '''
+    df_b_3cols = df_b[['Street Address', 'Source Zipcode', 'Business Start Date']]
+    # Let's get all the addresses
+    address_lst = df['business_address'].tolist()
+    address_unique_lst = list(set(address_lst))
+    
+    # Using the unique addresses from SF inpect, identify the same addresses
+    # at SF business loc. Find num of turnovers and startdates. Update SF inspect.
+    for address in address_unique_lst:
+        df_b_3unique = df_b_3cols[df_b_3cols['Street Address'] == address]
+        if len(df_b_3unique) > 0:
+            num_turnovers = len(df_b_3unique)
+            latest_startdate = pd.to_datetime(max(df_b_3unique['Business Start Date'].values))
+            # let's append these info onto df
+            idx = df[df['business_address'] == address].index
+            df.loc[idx,'number_turnovers'] = num_turnovers
+            df.loc[idx,'start_date'] = latest_startdate
+    
+    # Let's replace average values of num turnovers and start dates for NaN
+    mask_turnovers = df['number_turnovers'].isnull()
+    
+    # sum(~mask_turnovers) is the number of True in number_turnovers
+    avg_turnover = sum(df['number_turnovers'][~mask_turnovers])/sum(~mask_turnovers)
+    df.loc[mask_turnovers, 'number_turnovers'] = avg_turnover
+    
+    # convert datetime in start_date to integer to use it for modeling
+    df.loc[:,'start_date'] = df.loc[:,'start_date'].dt.strftime('%Y%m%d')
+    df.loc[~mask_turnovers,'start_date'] = df.loc[~mask_turnovers,'start_date'].astype(int)
+    avg_startdate = sum(df['start_date'][~mask_turnovers].values)/sum(~mask_turnovers)
+    df.loc[mask_turnovers, 'start_date'] = int(avg_startdate)
+    
+    return df
+
+#####################################################################
+#  Step 5: Zip code dummy columns created
 #####################################################################
 def get_zipcode_dummies(df):
     '''
-        Input : pass in a dataframe from Step 3
+        Input : pass in a dataframe from Step 4
         Output: returns a dataframe with zip code dummies.
         Comment: creates a text file called "col_names.txt" that will
                  be used to select features.
@@ -192,11 +234,11 @@ def get_zipcode_dummies(df):
     return df2
 
 #####################################################################
-#  Step 5: Remove the rows with 0 violation between 10 and 36 months
+#  Step 6: Remove the rows with 0 violation between 10 and 36 months
 #####################################################################
 def remove_rows_zero_violation(df):
     '''
-        Input : pass in a dataframe from Step 4
+        Input : pass in a dataframe from Step 5
         Output: returns a dataframe without the rows with zero violation
                 between 10 and 36 months. (Those rows are labeled as
                 1, since this data set is from at least one violation.)
@@ -224,9 +266,10 @@ def scrub_all(df):
     df3 = group_bid_idate(df2)
     df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
     df4 = import_zipcode(df3, df_b)
-    df5 = get_zipcode_dummies(df4)
-    df6 = remove_rows_zero_violation(df5) 
-    return df6
+    #df5 = import_turnover_startdate(df4, df_b)
+    df6 = get_zipcode_dummies(df4)
+    df7 = remove_rows_zero_violation(df6) 
+    return df7
     '''
     X = df5[feature_names].values
     y = df5['fraud_no_fraud'].values
