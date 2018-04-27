@@ -3,7 +3,7 @@ import pandas as pd
 
 
 #####################################################################
-#  Step 1: remove missing violation id's
+#  Step 1: remove missing violation id's (ipynb: 01)
 #####################################################################
 def remove_missing_vid(df):
     '''
@@ -30,7 +30,7 @@ def remove_missing_vid(df):
 
 #####################################################################
 #  Step 2: get the number of violations per business at a given 
-#          inspection date
+#          inspection date (ipynb: 03-1)
 #####################################################################
 def group_bid_idate(df):
     '''
@@ -106,7 +106,7 @@ def group_bid_idate(df):
     return idf
 
 #####################################################################
-#  Step 3: Import zip codes from SF business location file
+#  Step 3: Import zip codes from SF business location file (ipynb: 05)
 #####################################################################
 def import_zipcode(df, df_b):
     '''
@@ -163,7 +163,7 @@ def import_zipcode(df, df_b):
     return df_update_zipcode
 
 #####################################################################
-#  Step 4: Add number of turnovers and latest business startdate
+#  Step 4: Add number of turnovers and latest business startdate (ipynb: 05b)
 #####################################################################
 def import_turnover_startdate(df, df_b):
     '''
@@ -205,7 +205,7 @@ def import_turnover_startdate(df, df_b):
     return df
 
 #####################################################################
-#  Step 5: Zip code dummy columns created
+#  Step 5: Zip code dummy columns created (ipynb: 06)
 #####################################################################
 def get_zipcode_dummies(df):
     '''
