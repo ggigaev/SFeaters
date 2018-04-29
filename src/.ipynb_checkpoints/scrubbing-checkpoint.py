@@ -128,8 +128,18 @@ def geo_coords_import(df, csv_file):
                 if df_address == address[:-6]: 
                     df.loc[idx, 'business_longitude'] = longitude
                     df.loc[idx, 'business_latitude'] = latitude
-                                    
-    return df
+    
+    # change longitude and latitude to float type
+    df['business_longitude'] = df['business_longitude'].astype(float)
+    df['business_latitude'] = df['business_latitude'].astype(float)
+    
+    # remove outliers
+    mask333 = df['business_longitude'].values > -122.375
+    df2 = df[~mask333]
+    mask334 = df2['business_latitude'].values < 37.70
+    df3 = df2[~mask334]
+    
+    return df3
 
 
 #####################################################################
