@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import csv
 
 
 #####################################################################
@@ -106,7 +107,33 @@ def group_bid_idate(df):
     return idf
 
 #####################################################################
-#  Step 3: Import zip codes from SF business location file (ipynb: 05)
+#  Step 3: remove missing violation id's (ipynb: 42-1)
+#####################################################################
+def geo_coords_import(df, csv_file):
+    '''
+        Input : pass in a dataframe from the previous step and a csv file
+                with geo coords
+        Output: returns a dataframe with geo coords imported
+    '''
+    with open(csv_file, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            address = row[0]
+            longitude = row[1]
+            latitude = row[2]
+            n = len(df)
+            for idx in range(n):
+                df_address = df.loc[idx, 'business_address']
+                # to remove ' SF CA' at the end of an address
+                if df_address == address[:-6]: 
+                    df.loc[idx, 'business_longitude'] = longitude
+                    df.loc[idx, 'business_latitude'] = latitude
+                                    
+    return df
+
+
+#####################################################################
+#  Step 4: Import zip codes from SF business location file (ipynb: 05)
 #####################################################################
 def import_zipcode(df, df_b):
     '''
@@ -163,7 +190,7 @@ def import_zipcode(df, df_b):
     return df_update_zipcode
 
 #####################################################################
-#  Step 4: Add number of turnovers and latest business startdate (ipynb: 05b)
+#  Step 5: Add number of turnovers and latest business startdate (ipynb: 05b)
 #####################################################################
 def import_turnover_startdate(df, df_b):
     '''
@@ -205,7 +232,7 @@ def import_turnover_startdate(df, df_b):
     return df
 
 #####################################################################
-#  Step 5: Zip code dummy columns created (ipynb: 06)
+#  Step 6: Zip code dummy columns created (ipynb: 06)
 #####################################################################
 def get_zipcode_dummies(df):
     '''
@@ -234,7 +261,7 @@ def get_zipcode_dummies(df):
     return df2
 
 #####################################################################
-#  Step 6: Remove the rows with 0 violation between 10 and 36 months
+#  Step 7: Remove the rows with 0 violation between 10 and 36 months
 #####################################################################
 def remove_rows_zero_violation(df):
     '''
@@ -264,12 +291,14 @@ def scrub_all(df):
     '''
     df2 = remove_missing_vid(df)
     df3 = group_bid_idate(df2)
+    csv_file = 'data/geo_coords_sf.csv'
+    df4 = geo_coords_import(df3, csv_file)
     df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
-    df4 = import_zipcode(df3, df_b)
-    #df5 = import_turnover_startdate(df4, df_b)
-    df6 = get_zipcode_dummies(df4)
-    df7 = remove_rows_zero_violation(df6) 
-    return df7
+    df5 = import_zipcode(df4, df_b)
+    #df6 = import_turnover_startdate(df5, df_b)
+    df7 = get_zipcode_dummies(df5)
+    df8 = remove_rows_zero_violation(df7) 
+    return df8
     '''
     X = df5[feature_names].values
     y = df5['fraud_no_fraud'].values
