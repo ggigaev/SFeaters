@@ -271,6 +271,36 @@ def get_zipcode_dummies(df):
     return df2
 
 #####################################################################
+#  Step 6-1: Zip code dummy columns created (ipynb: 06)
+#####################################################################
+def get_zipcode_dummies2(df):
+    '''
+        Input : pass in a dataframe from Step 4
+        Output: returns a dataframe with zip code dummies.
+        Comment: creates a text file called "col_names.txt" that will
+                 be used to select features.
+                 Use the latest 6 months period as y label.
+    '''
+    # Using 6 months period as y label
+    df['y_label'] = (df['p1_3'] + df['p4_6'] ) > 0
+    
+    # pd.get_dummies(df['business_postal_code'])
+    df = pd.concat([df, pd.get_dummies(df['business_postal_code'])], axis=1)
+    # remove one redundant column
+    df2 = df.drop(['zzzzz'], axis=1)
+    
+    # create a text file with column names, so that they can be used for feature 
+    # selection. Remove 95105 and 92672, which do not belong to SF.
+    s = ''
+    for i in df2.columns.values:
+        s += i + ', '
+        
+    with open('data/col_names.txt', 'w') as f:
+        f.write(s)
+    
+    return df2
+
+#####################################################################
 #  Step 7: Remove the rows with 0 violation between 10 and 36 months
 #####################################################################
 def remove_rows_zero_violation(df):
@@ -285,6 +315,24 @@ def remove_rows_zero_violation(df):
     
     # Let's remove the ones with df5['p10_36'] == 0
     df2 = df[df['p10_36'] != 0]
+    
+    return df2
+
+#####################################################################
+#  Step 7-1: Remove the rows with 0 violation between 7 and 36 months
+#####################################################################
+def remove_rows_zero_violation2(df):
+    '''
+        Input : pass in a dataframe from Step 6
+        Output: returns a dataframe without the rows with zero violation
+                between 7 and 36 months. (Those rows are labeled as
+                1, since this data set is from at least one violation.)
+    '''
+    # Using 6 months period as y label
+    df['p7_36'] = df['p7_9'] + df['p10_12'] + df['p13_18'] + df['p19_24'] + df['p25_36']
+    
+    # Let's remove the ones with df5['p7_36'] == 0
+    df2 = df[df['p7_36'] != 0]
     
     return df2
 
@@ -306,8 +354,8 @@ def scrub_all(df):
     df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
     df5 = import_zipcode(df4, df_b)
     #df6 = import_turnover_startdate(df5, df_b)
-    df7 = get_zipcode_dummies(df5)
-    df8 = remove_rows_zero_violation(df7) 
+    df7 = get_zipcode_dummies2(df5)
+    df8 = remove_rows_zero_violation2(df7) 
     return df8
     '''
     X = df5[feature_names].values
