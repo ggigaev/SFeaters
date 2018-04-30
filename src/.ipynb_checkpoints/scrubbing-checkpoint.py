@@ -204,7 +204,7 @@ def import_zipcode(df, df_b):
 #####################################################################
 def import_turnover_startdate(df, df_b):
     '''
-        Input : pass in a dataframe from Step 3 and lookup df (SF business loc)
+        Input : pass in a dataframe from Step 4 and lookup df (SF business loc)
         Output: returns a dataframe with number of turnovers and start dates
         Comment: missing data were filled with average of turnovers and 
                 average startdate
@@ -275,7 +275,7 @@ def get_zipcode_dummies(df):
 #####################################################################
 def remove_rows_zero_violation(df):
     '''
-        Input : pass in a dataframe from Step 5
+        Input : pass in a dataframe from Step 6
         Output: returns a dataframe without the rows with zero violation
                 between 10 and 36 months. (Those rows are labeled as
                 1, since this data set is from at least one violation.)
