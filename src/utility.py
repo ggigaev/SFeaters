@@ -106,7 +106,7 @@ def yelp_ratings(df, df_ratings):
 #####################################################################
 #  import yelp food prices (ipynb: 09)
 #####################################################################
-def yelp_prices(df, df_ratings):
+def yelp_prices(df, df_prices):
     '''
         Input : pass in two dataframes
            df = pd.read_pickle('data/sf_inspection2.pkl') or last df
@@ -115,7 +115,7 @@ def yelp_prices(df, df_ratings):
         Output: returns a dataframe with a new column called 'price'
     '''
     
-    prices_lst = list(df_ratings.iloc[:,0])
+    prices_lst = list(df_prices.iloc[:,0])
     
     # extract restaurant names first
     rnames = []
