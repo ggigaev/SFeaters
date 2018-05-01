@@ -200,48 +200,6 @@ def import_zipcode(df, df_b):
     return df_update_zipcode
 
 #####################################################################
-#  Step 5: Add number of turnovers and latest business startdate (ipynb: 05b)
-#####################################################################
-def import_turnover_startdate(df, df_b):
-    '''
-        Input : pass in a dataframe from Step 4 and lookup df (SF business loc)
-        Output: returns a dataframe with number of turnovers and start dates
-        Comment: missing data were filled with average of turnovers and 
-                average startdate
-    '''
-    df_b_3cols = df_b[['Street Address', 'Source Zipcode', 'Business Start Date']]
-    # Let's get all the addresses
-    address_lst = df['business_address'].tolist()
-    address_unique_lst = list(set(address_lst))
-    
-    # Using the unique addresses from SF inpect, identify the same addresses
-    # at SF business loc. Find num of turnovers and startdates. Update SF inspect.
-    for address in address_unique_lst:
-        df_b_3unique = df_b_3cols[df_b_3cols['Street Address'] == address]
-        if len(df_b_3unique) > 0:
-            num_turnovers = len(df_b_3unique)
-            latest_startdate = pd.to_datetime(max(df_b_3unique['Business Start Date'].values))
-            # let's append these info onto df
-            idx = df[df['business_address'] == address].index
-            df.loc[idx,'number_turnovers'] = num_turnovers
-            df.loc[idx,'start_date'] = latest_startdate
-    
-    # Let's replace average values of num turnovers and start dates for NaN
-    mask_turnovers = df['number_turnovers'].isnull()
-    
-    # sum(~mask_turnovers) is the number of True in number_turnovers
-    avg_turnover = sum(df['number_turnovers'][~mask_turnovers])/sum(~mask_turnovers)
-    df.loc[mask_turnovers, 'number_turnovers'] = avg_turnover
-    
-    # convert datetime in start_date to integer to use it for modeling
-    df.loc[:,'start_date'] = df.loc[:,'start_date'].dt.strftime('%Y%m%d')
-    df.loc[~mask_turnovers,'start_date'] = df.loc[~mask_turnovers,'start_date'].astype(int)
-    avg_startdate = sum(df['start_date'][~mask_turnovers].values)/sum(~mask_turnovers)
-    df.loc[mask_turnovers, 'start_date'] = int(avg_startdate)
-    
-    return df
-
-#####################################################################
 #  Step 6: Zip code dummy columns created (ipynb: 06)
 #####################################################################
 def get_zipcode_dummies(df):
@@ -339,7 +297,7 @@ def remove_rows_zero_violation2(df):
 #####################################################################
 #  SCRUB EVERYTHING
 #####################################################################
-def scrub_all(df):
+def scrub_all(df, feature_names):
     '''
         Input : pass in a dataframe, and a list of wanted feature names
         Output: tuple of 3 items
@@ -352,13 +310,13 @@ def scrub_all(df):
     csv_file = 'data/geo_coords_sf.csv'
     df4 = geo_coords_import(df3, csv_file)
     df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
+    # import_turnover_duration runs here if needed
     df5 = import_zipcode(df4, df_b)
-    #df6 = import_turnover_startdate(df5, df_b)
-    df7 = get_zipcode_dummies2(df5)
-    df8 = remove_rows_zero_violation2(df7) 
-    return df8
-    '''
-    X = df5[feature_names].values
-    y = df5['fraud_no_fraud'].values
-    return (df, y, X)
-'''
+    df6 = get_zipcode_dummies2(df5)  # with new time periods
+    df7 = remove_rows_zero_violation2(df6)  # with new time periods
+    # yelp_ratings runs here if needed
+    # yelp_prices runs here if needed
+
+    X = df7[feature_names]
+    y = df7['y_label']
+    return (df, X, y)
