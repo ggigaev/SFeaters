@@ -104,7 +104,7 @@ def yelp_ratings(df, df_ratings):
     return df
 
 #####################################################################
-#  import yelp food prices (ipynb: 09)
+#  import yelp food prices (ipynb: 08-1)
 #####################################################################
 def yelp_prices(df, df_prices):
     '''
