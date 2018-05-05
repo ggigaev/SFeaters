@@ -1,7 +1,17 @@
 import numpy as np
 import pandas as pd
 import csv
-import src.utility as utility
+import utility
+import sys
+
+if len(sys.argv) >1:
+    input_csv = sys.argv[1]
+    data_sample_size = int(sys.argv[2])
+else:
+    print("No arguments")
+
+print(input_csv)
+df = pd.read_csv(input_csv)
 
 #####################################################################
 #  Step 1: remove missing violation id's (ipynb: 01)
@@ -11,6 +21,7 @@ def remove_missing_vid(df):
         Input : pass in a dataframe
         Output: returns a dataframe with clean violation id's
     '''
+    print('hello')
     mask_viol = df['violation_id'].isnull()
     df_viol = df[~mask_viol]
     
@@ -297,7 +308,7 @@ def remove_rows_zero_violation2(df):
 #####################################################################
 #  SCRUB EVERYTHING
 #####################################################################
-def scrub_all(df, feature_names):
+if __name__ == "__main__":
     '''
         Input : pass in a dataframe, and a list of wanted feature names
         Output: tuple of 3 items
@@ -316,21 +327,18 @@ def scrub_all(df, feature_names):
     df4b = utility.import_turnover_duration(df4, df_b)
     #======================================================================
     
-    df5 = import_zipcode(df4b, df_b)
+    df5 = import_zipcode(df4, df_b)
     df6 = get_zipcode_dummies2(df5)  # with new time periods
     df7 = remove_rows_zero_violation2(df6)  # with new time periods
     
     #======================================================================
     # yelp_ratings runs here if needed
     # yelp_prices runs here if needed
-    df_ratings = pd.read_pickle('data/yelp_ratings.pkl')
-    df_prices = pd.read_pickle('data/yelp_prices.pkl')
-    
-    df7a = utility.yelp_ratings(df7, df_ratings)
-    df7b = utility.yelp_prices(df7a, df_prices)
-    df7c = utility.geo_round(df7b)
+    # df_ratings = pd.read_pickle('..data/yelp_ratings.pkl')
+    # df_prices = pd.read_pickle('..data/yelp_prices.pkl')    
+    # df7a = utility.yelp_ratings(df7, df_ratings)
+    # df7b = utility.yelp_prices(df7a, df_prices)
+    # df7c = utility.geo_round(df7b)
     #======================================================================
 
-    X = df7c[feature_names]
-    y = df7c['y_label']
-    return (df, X, y)
+    df7.to_pickle('..data/sf_inspection.pkl')
