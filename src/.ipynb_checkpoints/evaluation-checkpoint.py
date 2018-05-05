@@ -44,9 +44,9 @@ class Scores(object):
         """
         Output: True Positive Rate, False Positive Rate
         """
-
+        # probability of being True for all the samples
         probs = self.model.predict_proba(self.X_test)[:,1]
-
+        # roc_curve returns fpr, tpr, thresholds
         roc = roc_curve(self.y_test, probs)
 
         return roc[0], roc[1], roc[2]

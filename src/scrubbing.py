@@ -11,7 +11,6 @@ else:
     print("No arguments")
 
 print(input_csv)
-df = pd.read_csv(input_csv)
 
 #####################################################################
 #  Step 1: remove missing violation id's (ipynb: 01)
@@ -234,7 +233,7 @@ def get_zipcode_dummies(df):
     for i in df2.columns.values:
         s += i + ', '
         
-    with open('data/col_names.txt', 'w') as f:
+    with open('../data/col_names.txt', 'w') as f:
         f.write(s)
     
     return df2
@@ -264,7 +263,7 @@ def get_zipcode_dummies2(df):
     for i in df2.columns.values:
         s += i + ', '
         
-    with open('data/col_names.txt', 'w') as f:
+    with open('../data/col_names.txt', 'w') as f:
         f.write(s)
     
     return df2
@@ -316,11 +315,13 @@ if __name__ == "__main__":
             2. returns 'y' --> target column
             3. returns 'X' --> Feature Matrix
     '''
+    df = pd.read_csv(input_csv)
+
     df2 = remove_missing_vid(df)
     df3 = group_bid_idate(df2)
-    csv_file = 'data/geo_coords_sf.csv'
+    csv_file = '../data/geo_coords_sf.csv'
     df4 = geo_coords_import(df3, csv_file)
-    df_b = pd.read_csv('data/Registered_Business_Locations_-_San_Francisco.csv')
+    df_b = pd.read_csv('../data/Registered_Business_Locations_-_San_Francisco.csv')
     
     #======================================================================
     # import_turnover_duration runs here if needed
@@ -334,11 +335,11 @@ if __name__ == "__main__":
     #======================================================================
     # yelp_ratings runs here if needed
     # yelp_prices runs here if needed
-    # df_ratings = pd.read_pickle('..data/yelp_ratings.pkl')
-    # df_prices = pd.read_pickle('..data/yelp_prices.pkl')    
+    # df_ratings = pd.read_pickle('../data/yelp_ratings.pkl')
+    # df_prices = pd.read_pickle('../data/yelp_prices.pkl')    
     # df7a = utility.yelp_ratings(df7, df_ratings)
     # df7b = utility.yelp_prices(df7a, df_prices)
     # df7c = utility.geo_round(df7b)
     #======================================================================
 
-    df7.to_pickle('..data/sf_inspection.pkl')
+    df.to_pickle('../data/sf_inspection.pkl')
