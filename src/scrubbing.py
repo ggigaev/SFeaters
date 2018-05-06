@@ -20,7 +20,6 @@ def remove_missing_vid(df):
         Input : pass in a dataframe
         Output: returns a dataframe with clean violation id's
     '''
-    print('hello')
     mask_viol = df['violation_id'].isnull()
     df_viol = df[~mask_viol]
     
@@ -325,7 +324,7 @@ if __name__ == "__main__":
     
     #======================================================================
     # import_turnover_duration runs here if needed
-    df4b = utility.import_turnover_duration(df4, df_b)
+    # df4b = utility.import_turnover_duration(df4, df_b)
     #======================================================================
     
     df5 = import_zipcode(df4, df_b)
@@ -342,4 +341,4 @@ if __name__ == "__main__":
     # df7c = utility.geo_round(df7b)
     #======================================================================
 
-    df.to_pickle('../data/sf_inspection.pkl')
+    df7.to_pickle('../data/sf_inspection.pkl')
