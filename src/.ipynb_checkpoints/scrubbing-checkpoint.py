@@ -329,7 +329,7 @@ if __name__ == "__main__":
     
     df5 = import_zipcode(df4, df_b)
     df6 = get_zipcode_dummies2(df5)  # with new time periods
-    df7 = remove_rows_zero_violation2(df6)  # with new time periods
+    #df7 = remove_rows_zero_violation2(df6)  # with new time periods
     
     #======================================================================
     # yelp_ratings runs here if needed
@@ -341,4 +341,4 @@ if __name__ == "__main__":
     # df7c = utility.geo_round(df7b)
     #======================================================================
 
-    df7.to_pickle('../data/sf_inspection.pkl')
+    df6.to_pickle('../data/sf_clean_data.pkl')

@@ -4,14 +4,6 @@ import csv
 import utility
 import sys
 
-if len(sys.argv) >1:
-    input_csv = sys.argv[1]
-    data_sample_size = int(sys.argv[2])
-else:
-    print("No arguments")
-
-print(input_csv)
-
 #####################################################################
 #  Step 1: remove missing violation id's (ipynb: 01)
 #####################################################################
@@ -314,7 +306,7 @@ if __name__ == "__main__":
             2. returns 'y' --> target column
             3. returns 'X' --> Feature Matrix
     '''
-    df = pd.read_csv(input_csv)
+    df = pd.read_csv('../data/Restaurant_Scores_-_LIVES_Standard.csv')
 
     df2 = remove_missing_vid(df)
     df3 = group_bid_idate(df2)
@@ -324,21 +316,21 @@ if __name__ == "__main__":
     
     #======================================================================
     # import_turnover_duration runs here if needed
-    # df4b = utility.import_turnover_duration(df4, df_b)
+    df4b = utility.import_turnover_duration(df4, df_b)
     #======================================================================
     
-    df5 = import_zipcode(df4, df_b)
+    df5 = import_zipcode(df4b, df_b)
     df6 = get_zipcode_dummies2(df5)  # with new time periods
-    #df7 = remove_rows_zero_violation2(df6)  # with new time periods
+    # df7 = remove_rows_zero_violation2(df6)  # with new time periods
     
     #======================================================================
     # yelp_ratings runs here if needed
     # yelp_prices runs here if needed
-    # df_ratings = pd.read_pickle('../data/yelp_ratings.pkl')
-    # df_prices = pd.read_pickle('../data/yelp_prices.pkl')    
-    # df7a = utility.yelp_ratings(df7, df_ratings)
-    # df7b = utility.yelp_prices(df7a, df_prices)
-    # df7c = utility.geo_round(df7b)
+    df_ratings = pd.read_pickle('../data/yelp_ratings.pkl')
+    df_prices = pd.read_pickle('../data/yelp_prices.pkl')    
+    df7a = utility.yelp_ratings(df6, df_ratings)
+    df7b = utility.yelp_prices(df7a, df_prices)
+    df7c = utility.geo_round(df7b)
     #======================================================================
 
-    df6.to_pickle('../data/sf_clean_data.pkl')
+    df7c.to_pickle('../data/sf_inspection_master.pkl')

@@ -38,19 +38,6 @@ class Scores(object):
 
         print ("\n".join([acc_str, prec_str, rec_str, f1_str]))
 
-
-    def roc(self):
-
-        """
-        Output: True Positive Rate, False Positive Rate
-        """
-        # probability of being True for all the samples
-        probs = self.model.predict_proba(self.X_test)[:,1]
-        # roc_curve returns fpr, tpr, thresholds
-        roc = roc_curve(self.y_test, probs)
-
-        return roc[0], roc[1], roc[2]
-
     def profit_curve(self, num_points, profit_matrix=[[0,-10],[0,190]]):
 
         """

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import utility
 import sys
-import pickle
 
 if len(sys.argv) >1:
     print("Write the restaurant's name: ")
@@ -25,7 +24,6 @@ if __name__ == "__main__":
             1. print out restaurant name and address
             2. print out prediction
     '''
-    accuracy = 70.1
     feature_names = ['p1_3','p4_6', 'p7_12', 'p13_18', 'p19_36', '94013', 
                      '94014', '94080', '94101', '94102', '94103', '94104',
        '94105', '94107', '94108', '94109', '94110', '94111', '94112', '94114',
@@ -45,7 +43,11 @@ if __name__ == "__main__":
     filename = '../data/finalized_model.sav'
     loaded_model = pickle.load(open(filename, 'rb'))
     
-    prediction = loaded_model.predict(X)
+    prediction = loaded_model.predict(X_test)
+    
+    # prediction
+    accuracy = "%.3f" % accuracy_score(y_test, prediction)
+    accuracy = float(accuracy) * 100
     
     names_addresses = df[['business_name', 'business_address', 'y_label']]
     n = len(names_addresses)

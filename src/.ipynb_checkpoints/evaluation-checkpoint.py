@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import utility
 import sys
+import pickle
+import scrubbing
 
 if len(sys.argv) >1:
     input_pkl = sys.argv[1]
@@ -51,19 +53,6 @@ class Scores(object):
 
         print ("\n".join([acc_str, prec_str, rec_str, f1_str]))
 
-
-    def roc(self):
-
-        """
-        Output: True Positive Rate, False Positive Rate
-        """
-        # probability of being True for all the samples
-        probs = self.model.predict_proba(self.X_test)[:,1]
-        # roc_curve returns fpr, tpr, thresholds
-        roc = roc_curve(self.y_test, probs)
-
-        return roc[0], roc[1], roc[2]
-
     def profit_curve(self, num_points, profit_matrix=[[0,-10],[0,190]]):
 
         """
@@ -108,7 +97,8 @@ if __name__ == "__main__":
        '94115', '94116', '94117', '94118', '94120', '94121', '94122', '94123',
        '94124', '94127', '94129', '94130', '94131', '94132', '94133', '94134',
        '94143', '94158']
-    df = pd.read_pickle(input_pkl)
+    df2 = pd.read_pickle(input_pkl)
+    df = scrubbing.remove_rows_zero_violation2(df2) 
 
     y = df['y_label']
     X = df[feature_names]
@@ -121,6 +111,11 @@ if __name__ == "__main__":
     gb.fit(X_train, y_train)
     
     model = gb
+    
+    # save the model to disk
+    filename = '../data/finalized_model.sav'
+    pickle.dump(model, open(filename, 'wb'))
+    
     prediction = model.predict(X_test)
     
     # scores
