@@ -8,7 +8,7 @@ import utility
 import sys
 import pickle
 
-if len(sys.argv) >1:
+if len(sys.argv) >0:
     print("Write the restaurant's name: ")
     input_name = input()
 else:
@@ -24,6 +24,17 @@ if __name__ == "__main__":
         Output: 
             1. print out restaurant name and address
             2. print out prediction
+        Comment: At the command line, go to src folder and type 
+                 src$ python prediction.py.
+                 This will prompt you for a restaurant name.
+                 Once it receives the restaurant name, it will automaticall 
+                 import sf_inspection.pkl from data folder. It will use the 
+                 entire data set (without removing the ones with zero violations 
+                 before 7 months ago) and rearrange the time periods
+                 by including 1 - 6 months into test set (not targets anymore).
+                 See the change in feature_names.
+                 This program uses the model already developed at evaluation.py.
+                 The model file name is "finalized_model.sav", a pickle file.
     '''
     accuracy = 70.1
     feature_names = ['p1_3','p4_6', 'p7_12', 'p13_18', 'p19_36', '94013', 

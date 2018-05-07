@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) >1:
     input_csv = sys.argv[1]
-    data_sample_size = int(sys.argv[2])
+    # data_sample_size = int(sys.argv[2])
 else:
     print("No arguments")
 
@@ -313,6 +313,12 @@ if __name__ == "__main__":
             1. returns a new dataframe with all scrubbing steps done
             2. returns 'y' --> target column
             3. returns 'X' --> Feature Matrix
+        Comment: At the command line, go to src folder and type 
+                 src$ python scrubbing.py "../data/sf_inspection_2018.csv" 
+                 This will clean up and import related data from Yelp, geopy,
+                 and "Registered_Business_Locations_-_San_Francisco.csv".
+                 The output file name is sf_clean_data.pkl located at data 
+                 folder.
     '''
     df = pd.read_csv(input_csv)
 

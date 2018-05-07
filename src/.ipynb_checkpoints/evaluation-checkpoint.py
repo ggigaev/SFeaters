@@ -9,9 +9,10 @@ import sys
 import pickle
 import scrubbing
 
-if len(sys.argv) >1:
+
+if len(sys.argv) > 1:
     input_pkl = sys.argv[1]
-    data_sample_size = int(sys.argv[2])
+    # data_sample_size = int(sys.argv[2])
 else:
     print("No arguments")
 
@@ -90,6 +91,11 @@ if __name__ == "__main__":
         Output: 
             1. print out confusion matrix
             2. print out precision, recall, F1, and accuracy
+        Comment: At the command line, go to src folder and type 
+                 src$ python evaluation.py "../data/sf_inspection.pkl" 
+                 This will give scores and confusion matrix.
+                 This also saves a final model file, finalized_model.sav
+                 at data folder. This file will be used by prediction.
     '''
     feature_names = ['p7_9','p10_12', 'p13_18', 'p19_24', 'p25_36', '94013', 
                      '94014', '94080', '94101', '94102', '94103', '94104',
