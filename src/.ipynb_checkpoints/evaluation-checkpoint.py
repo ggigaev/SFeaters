@@ -16,8 +16,6 @@ if len(sys.argv) > 1:
 else:
     print("No arguments")
 
-print(input_pkl)
-
 class Scores(object):
 
     """
