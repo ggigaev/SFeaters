@@ -90,7 +90,7 @@ if __name__ == "__main__":
             1. print out confusion matrix
             2. print out precision, recall, F1, and accuracy
         Comment: At the command line, go to src folder and type 
-                 src$ python evaluation.py "../data/sf_inspection.pkl" 
+                 src$ python evaluation.py "../data/sf_clean_data.pkl" 
                  This will give scores and confusion matrix.
                  This also saves a final model file, finalized_model.sav
                  at data folder. This file will be used by prediction.
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     X_train, X_validation, y_train, y_validation = train_test_split(X_tr, y_tr, 
                                                         test_size=0.25, random_state=28)
     
-    gb = GradientBoostingClassifier(n_estimators=20, learning_rate = 0.5, max_features=2, 
-                                    max_depth = 2, random_state = 0)
+    gb = GradientBoostingClassifier(n_estimators=40, learning_rate = 0.075, max_features=4, 
+                                    max_depth = 8, subsample=0.4, random_state = 0)
     gb.fit(X_train, y_train)
     
     model = gb

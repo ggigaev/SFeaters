@@ -10,7 +10,6 @@ if len(sys.argv) >1:
 else:
     print("No arguments")
 
-print(input_csv)
 
 #####################################################################
 #  Step 1: remove missing violation id's (ipynb: 01)

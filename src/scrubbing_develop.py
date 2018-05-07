@@ -297,9 +297,10 @@ def remove_rows_zero_violation2(df):
 #####################################################################
 #  SCRUB EVERYTHING
 #####################################################################
-def scrub_all(df, feature_names):
+def scrub_all(df):
     '''
-        Input : pass in a dataframe, and a list of wanted feature names
+        Input : pass in a dataframe of original SF restaurant inspection
+            df = pd.read_csv('data/Restaurant_Scores_-_LIVES_Standard.csv')
         Output: tuple of 3 items
             1. returns a new dataframe with all scrubbing steps done
             2. returns 'y' --> target column
@@ -330,6 +331,4 @@ def scrub_all(df, feature_names):
     df7c = utility.geo_round(df7b)
     #======================================================================
 
-    X = df7[feature_names]
-    y = df7['y_label']
-    return (df, X, y)
+    return df7c

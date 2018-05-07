@@ -36,14 +36,14 @@ if __name__ == "__main__":
                  This program uses the model already developed at evaluation.py.
                  The model file name is "finalized_model.sav", a pickle file.
     '''
-    accuracy = 70.1
+    accuracy = 71.2
     feature_names = ['p1_3','p4_6', 'p7_12', 'p13_18', 'p19_36', '94013', 
                      '94014', '94080', '94101', '94102', '94103', '94104',
        '94105', '94107', '94108', '94109', '94110', '94111', '94112', '94114',
        '94115', '94116', '94117', '94118', '94120', '94121', '94122', '94123',
        '94124', '94127', '94129', '94130', '94131', '94132', '94133', '94134',
        '94143', '94158']
-    df = pd.read_pickle('../data/sf_inspection.pkl')
+    df = pd.read_pickle('../data/sf_clean_data.pkl')
 
     # create new columns for p7_12 and p19_36
     df['p7_12'] = df['p7_9'] + df['p10_12']
