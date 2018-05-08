@@ -90,7 +90,7 @@ if __name__ == "__main__":
             1. print out confusion matrix
             2. print out precision, recall, F1, and accuracy
         Comment: At the command line, go to src folder and type 
-                 src$ python evaluation.py "../data/sf_clean_data.pkl" 
+                 src$ python evaluation.py "../data/sf_inspection_master.pkl" 
                  This will give scores and confusion matrix.
                  This also saves a final model file, finalized_model.sav
                  at data folder. This file will be used by prediction.

@@ -43,7 +43,7 @@ if __name__ == "__main__":
        '94115', '94116', '94117', '94118', '94120', '94121', '94122', '94123',
        '94124', '94127', '94129', '94130', '94131', '94132', '94133', '94134',
        '94143', '94158']
-    df = pd.read_pickle('../data/sf_clean_data.pkl')
+    df = pd.read_pickle('../data/sf_inspection_master.pkl')
 
     # create new columns for p7_12 and p19_36
     df['p7_12'] = df['p7_9'] + df['p10_12']
