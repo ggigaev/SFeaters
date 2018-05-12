@@ -1,0 +1,21 @@
+body {
+   background-color: #99cc99;
+}
+
+img {
+   height: 120px;
+   width: 120px;
+}
+
+li {
+   font-family: verdana, Tahoma;
+}
+
+h1 {
+   font-family: verdana, Tahoma;
+   color: black;
+   background-color: #c0c0c0;
+   border: 2px solid #442222;
+   margin: 20px;
+   padding: 20px;
+}
