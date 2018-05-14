@@ -1,5 +1,5 @@
 # SFeaters
-![alt text](img/website_header.png)
+![alt text](img/website_header2.png)
 # Abstract
 San Francisco publishes its restaurant health inspection data in monthly basis. This data set covers the past three years. Based on the violation history, we should be able to tell the future performance of a restaurant.  
 The 3 year period was segmented into 6 different ones, and the latest 6 months were used as target. That is, if a restaurant  has one or more violations during the period, it is labeled as “True”.  
