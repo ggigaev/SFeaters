@@ -81,6 +81,12 @@ Why?
 ![alt text](img/rating_price.png)  
 Customer ratings and food prices have no correlation with food safety.
 # Next Steps
-### 1. Restaurant category information from Yelp:
-####     Type of food: Chinese, French, Mediterranean, seafood, ramen, Southern,  ...
-#### 2. Time series analysis on this data.
+1. Restaurant category information from Yelp:
+   Type of food: Chinese, French, Mediterranean, seafood, ramen, Southern,  ...
+2. Time series analysis on this data.
+# Technologies used
+* Data process and analysis: Python, SKlearn, Pandas, Matplotlib, GeoPy  
+* Website: HTML, Flask, JavaScript  
+* Web scraping: MongoDB and BeautifulSoup  
+* Cloud computing: AWS, EC2, and S3  
+* Data version control: Github  
