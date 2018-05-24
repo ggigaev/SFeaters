@@ -53,21 +53,9 @@ def run_predict(input_name):
     n = len(names_addresses)
     flag = 0    # to find out any restaurant not in the list
     
-    # input name list
-    input_name_list = list(input_name.lower().split())
-    input_name_list
-    
     L = []
     for i in range(n):
-        # remove apostrophes
-        res_name = names_addresses.iloc[i,0].replace("'", "")
-        res_name_list = list(res_name.lower().split())
-        found = 1
-        for input_name in  input_name_list:
-            input_name = input_name.replace("'", "")
-            if input_name not in res_name_list:
-                found *= 0
-        if found == 1:      
+        if input_name.lower() == names_addresses.iloc[i,0].lower():
             restaurant_name = names_addresses.iloc[i][0]
             restaurant_address = names_addresses.iloc[i][1]
             astr1 = 'Restaurant name: {} \nAddress: {}\n'.format(restaurant_name, restaurant_address)
@@ -84,8 +72,4 @@ def run_predict(input_name):
     if flag == 0:
         return 'This place is not rated. \n'
     
-    # limit the found restaurants to 20
-    if len(L) > 40:
-        L = L[:40]
-        
     return L
