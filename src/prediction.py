@@ -61,8 +61,22 @@ if __name__ == "__main__":
     names_addresses = df[['business_name', 'business_address', 'y_label']]
     n = len(names_addresses)
     flag = 0    # to find out any restaurant not in the list
+    
+    
+    # input name list
+    input_name_list = list(input_name.lower().split())
+    input_name_list
+    
     for i in range(n):
-        if input_name.lower() == names_addresses.iloc[i,0].lower():
+        # remove apostrophes
+        res_name = names_addresses.iloc[i,0].replace("'", "").replace(",", "").replace(".", "")
+        res_name_list = list(res_name.lower().split())
+        found = 1
+        for input_name in  input_name_list:
+            input_name = input_name.replace("'", "").replace(".", "")
+            if input_name not in res_name_list:
+                found *= 0
+        if found == 1: 
             restaurant_name = names_addresses.iloc[i][0]
             restaurant_address = names_addresses.iloc[i][1]
             print('Restaurant name: {} \nAddress: {}'.format(restaurant_name, restaurant_address))

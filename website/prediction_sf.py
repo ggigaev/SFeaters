@@ -60,11 +60,11 @@ def run_predict(input_name):
     L = []
     for i in range(n):
         # remove apostrophes
-        res_name = names_addresses.iloc[i,0].replace("'", "")
+        res_name = names_addresses.iloc[i,0].replace("'", "").replace(",", "").replace(".", "")
         res_name_list = list(res_name.lower().split())
         found = 1
         for input_name in  input_name_list:
-            input_name = input_name.replace("'", "")
+            input_name = input_name.replace("'", "").replace(".", "")
             if input_name not in res_name_list:
                 found *= 0
         if found == 1:      
