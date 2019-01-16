@@ -81,6 +81,8 @@ Why?
 ## Histograms for ratings and prices  
 ![alt text](img/rating_price.png)  
 Customer ratings and food prices have no correlation with food safety.
+# Predictor published online
+<a href="http://sfsafefood.com:3333/sfeaters" style="font-size:16px; text-decoration:underline" ><strong>SFeaters</strong></a>
 # Next Steps
 1. Restaurant category information from Yelp:
    Type of food: Chinese, French, Mediterranean, seafood, ramen, Southern,  ...
